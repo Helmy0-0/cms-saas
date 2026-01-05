@@ -53,3 +53,31 @@ Events::on('pre_system', static function (): void {
         }
     }
 });
+Events::on('exception', function (\Throwable $exception) {
+    $request = service('request');
+    $response = service('response');
+    
+    // Tentukan status code (default 500 kalau tidak ada)
+    $statusCode = $exception->getCode() ?: 500;
+    if ($statusCode < 100 || $statusCode > 599) $statusCode = 500;
+
+    // 1. Logika untuk API/AJAX
+    if ($request->isAJAX() || str_contains($request->getUri()->getPath(), 'api/')) {
+        $response->setStatusCode($statusCode)
+                 ->setJSON([
+                     'status'  => $statusCode,
+                     'error'   => true,
+                     'message' => $exception->getMessage(),
+                 ])->send();
+        exit; // Hentikan proses agar tidak muncul layout HTML bawaan CI
+    }
+
+    // 2. Logika untuk Web (403 Forbidden)
+    if ($statusCode === 403) {
+        echo view('errors/html/error_403', [
+            'code'    => 403,
+            'message' => $exception->getMessage(),
+        ]);
+        exit;
+    }
+});

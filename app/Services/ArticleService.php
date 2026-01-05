@@ -31,7 +31,7 @@ class ArticleService
             throw new HTTPException('You cant submit this article', 403);
         }
 
-        if (!$article->status !== 'draft') {
+        if ($article->status !== 'draft') {
             throw new \LogicException('This article isnt draft');
         }
 
@@ -70,4 +70,28 @@ class ArticleService
         ]);
     }
 
+    public function getPublishedArticlesPaginated(int $perPage)
+    {
+        return $this->articles
+            ->select('articles.*, users.name as author_name')
+            ->join('users', 'users.id = articles.author_id', 'left')
+            ->where('articles.status', 'published')
+            ->orderBy('articles.publish_at', 'DESC')
+            ->paginate($perPage);
+    }
+
+    public function getPublishedArticleBySlug(string $slug)
+    {
+        return $this->articles
+            ->select('articles.*, users.name as author_name')
+            ->join('users', 'users.id = articles.author_id', 'left')
+            ->where('articles.slug', $slug)
+            ->where('articles.status', 'published')
+            ->first();
+    }
+
+    public function getPager()
+    {
+        return $this->articles->pager;
+    }
 }
