@@ -48,6 +48,10 @@ class ArticleService
 
         $article = $this->articles->find($articleId);
 
+        if (!$article) {
+            throw new HTTPException('/Article not found', 404);
+        }
+
         if ($article->status !== 'review') {
             throw new \LogicException('This article didnt review yet');
         }
@@ -63,6 +67,12 @@ class ArticleService
     {
         if(!in_array($role, ['admin', 'editor'])){
             throw new HTTPException('Your role cant reject this article', 403);
+        }
+
+        $article = $this->articles->find($articleId);
+
+        if (!$article) {
+            throw new HTTPException('Article not found', 404);
         }
 
         return $this->articles->update($articleId, [
@@ -93,5 +103,24 @@ class ArticleService
     public function getPager()
     {
         return $this->articles->pager;
+    }
+
+    public function getAllArticles()
+    {
+        return $this->articles
+            ->select('articles.*, users.name as author_name')
+            ->join('users', 'users.id = articles.author_id', 'left')
+            ->orderBy('articles.created_at', 'DESC')
+            ->findAll();
+    }
+
+    public function getArticlesByAuthor(int $authorId)
+    {
+        return $this->articles
+            ->select('articles,*, users.name as author_name')
+            ->join('users', 'user.id = articles.author.id', 'left')
+            ->where('articles.author_id', $authorId)
+            ->orderBy('articles.created_at', 'DESC')
+            ->findAll();
     }
 }

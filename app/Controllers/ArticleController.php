@@ -30,17 +30,18 @@ class ArticleController extends BaseController
         return redirect()->back();
     }
 
-    public function approve(int $articleId, int $approverId, string $role)
+    public function approve(int $articleId)
     {
         $this->service->approve(
-            $articleId, 
-            $approverId,
-            $role);
+            $articleId,
+            session()->get('user_id'),
+            session()->get('user_role')
+        );
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Article approved successfully');
     }
 
-    public function reject(int $articleId, int $approverId, string $role)
+    public function reject(int $articleId)
     {
         $this->service->reject(
             $articleId,
@@ -48,6 +49,6 @@ class ArticleController extends BaseController
             session()->get('user_role')
         );
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Article rejected successfully');
     }
 }
