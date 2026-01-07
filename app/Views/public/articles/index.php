@@ -9,6 +9,19 @@
 </head>
 
 <body class="bg-gray-100 text-gray-900">
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <h1 class="text-xl font-bold text-gray-800">CMS SaaS</h1>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm text-gray-600"> Welcome, 
+                    <?= esc(session()->get('user_role')) ?>
+                </span>
+                <a href="<?= site_url('/logout') ?>" class="text-sm text-red-600 hover:text-red-700">
+                    Logout
+                </a>
+            </div>
+        </div>
+    </nav>
 
     <div class="max-w-6xl mx-auto px-4 py-10">
         <header class="mb-8">

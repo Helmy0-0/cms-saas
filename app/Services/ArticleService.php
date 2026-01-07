@@ -117,8 +117,8 @@ class ArticleService
     public function getArticlesByAuthor(int $authorId)
     {
         return $this->articles
-            ->select('articles,*, users.name as author_name')
-            ->join('users', 'user.id = articles.author.id', 'left')
+            ->select('articles.*, users.name as author_name')
+            ->join('users', 'users.id = articles.author_id', 'left')
             ->where('articles.author_id', $authorId)
             ->orderBy('articles.created_at', 'DESC')
             ->findAll();
