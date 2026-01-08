@@ -23,5 +23,5 @@ class ArticleModel extends Model
     ];
 
     protected $useTimestamps = true;
-    protected $useSoftDeletes = true;
+    // protected $useSoftDeletes = true;
 }

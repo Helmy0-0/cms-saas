@@ -19,8 +19,12 @@ $routes->get('/logout', 'AuthController::logout');
 
 $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->get('/dashboard', 'DashboardController::index');
-
     $routes->get('dashboard/articles/create', 'DashboardController::create');
+
+    $routes->get('articles/edit/(:num)', 'ArticleController::edit/$1');
+    $routes->post('articles/update/(:num)', 'ArticleController::update/$1');
+    $routes->post('articles/delete/(:num)', 'ArticleController::delete/$1');
+    $routes->post('articles/takedown/(:num)', 'ArticleController::takedown/$1');
 
     $routes->group('articles', ['filter' => 'auth'], function ($routes) {
         $routes->post('create', 'ArticleController::store');

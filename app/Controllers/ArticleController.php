@@ -30,10 +30,10 @@ class ArticleController extends BaseController
         return redirect()->back();
     }
 
-    public function approve(int $articleId)
+    public function approve($articleId)
     {
         $this->service->approve(
-            $articleId,
+            (int) $articleId,
             session()->get('user_id'),
             session()->get('user_role')
         );
@@ -41,14 +41,78 @@ class ArticleController extends BaseController
         return redirect()->back()->with('success', 'Article approved successfully');
     }
 
-    public function reject(int $articleId)
+    public function reject($articleId)
     {
         $this->service->reject(
-            $articleId,
+            (int) $articleId,
             session()->get('user_id'),
             session()->get('user_role')
         );
 
         return redirect()->back()->with('success', 'Article rejected successfully');
+    }
+
+    public function publish($articleId)
+    {
+        $this->service->publish(
+            (int) $articleId,
+            session()->get('user_id')
+        );
+
+        return redirect()->back()->with('success', 'Article published successfully');
+    }
+
+    public function edit($articleId)
+    {
+        $article = $this->service->getArticleById((int) $articleId);
+
+        if (!$article) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        $data = [
+            'article' => $article,
+            'role' => session()->get('user_role'),
+        ];
+
+        return view('dashboard/edit', $data);
+    }
+
+    public function update($articleId)
+    {
+        $data = $this->request->getPost(['title', 'content']);
+
+        $this->service->updateArticle(
+            (int) $articleId,
+            $data,
+            session()->get('user_id'),
+            session()->get('user_role')
+        );
+
+        $message = session()->get('user_role') === 'writer'
+            ? 'Article updated successfully'
+            : 'Article updated and published successfully';
+        
+        return redirect()->to('/dashboard')->with('success', $message);
+    }
+
+    public function delete($articleId)
+    {
+        $this->service->deleteArticle(
+            (int) $articleId,
+            session()->get('user_id')
+        );
+
+        return redirect()->to('/dashboard')->with('success', 'Article deleted successfully');
+    }
+
+    public function takedown($articleId)
+    {
+        $this->service->takedown(
+            (int) $articleId,
+            session()->get('user_id')
+        );
+
+        return redirect()->to('/dashboard')->with('success', 'Article taken down successfully');
     }
 }
