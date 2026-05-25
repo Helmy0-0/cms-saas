@@ -34,6 +34,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->group('', ['filter' => 'role:admin,editor'], function ($routes) {
         $routes->post('approve/(:num)', 'ArticleController::approve/$1');
         $routes->post('reject/(:num)', 'ArticleController::reject/$1');
+        $routes->post('publish/(:num)', 'ArticleController::publish/$1');
     });
 });
 

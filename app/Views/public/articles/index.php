@@ -13,12 +13,21 @@
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <h1 class="text-xl font-bold text-gray-800">CMS SaaS</h1>
             <div class="flex items-center space-x-4">
-                <span class="text-sm text-gray-600"> Welcome, 
+                <?php if (session()->get('is_logged_in')): ?>
+                    <span class="text-sm text-gray-600"> Welcome, 
                     <?= esc(session()->get('user_role')) ?>
-                </span>
-                <a href="<?= site_url('/logout') ?>" class="text-sm text-red-600 hover:text-red-700">
+                    </span>
+                    <a href="<?= site_url('/dashboard') ?>" class="text-sm text-blue-600 hover:text-blue-700">
+                        Dashboard
+                    </a>
+                    <a href="<?= site_url('/logout') ?>" class="text-sm text-red-600 hover:text-red-700">
                     Logout
-                </a>
+                    </a>
+                <?php else: ?>
+                    <a href="<?= site_url('/login')?>" class="text-sm text-blue-600 hover:text-blue-900">
+                        Login
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </nav>

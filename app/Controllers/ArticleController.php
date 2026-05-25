@@ -20,7 +20,7 @@ class ArticleController extends BaseController
 
         $this->service->createDraft($data, session()->get('user_id'));
 
-        return redirect()->to('/articles');
+        return redirect()->to('/dashboard');
     }
 
     public function submit($id) 
@@ -110,7 +110,7 @@ class ArticleController extends BaseController
     {
         $this->service->takedown(
             (int) $articleId,
-            session()->get('user_id')
+            session()->get('user_id'),
         );
 
         return redirect()->to('/dashboard')->with('success', 'Article taken down successfully');
