@@ -16,7 +16,7 @@
             <h1 class="text-xl font-bold text-gray-800">CMS SaaS Dashboard</h1>
             <div class="flex items-center space-x-4">
                 <span>
-                    Hello, <?= esc(session()->get('name') ?? 'User')?>
+                    Hello, <?= esc(session()->get('name') ?? 'User') ?>
                 </span>
                 <span class="text-sm text-gray-600">
                     <?= esc(session()->get('user_role')) ?>
@@ -47,9 +47,74 @@
             </div>
         <?php endif; ?>
 
+        <?php if ($role === 'admin'): ?>
+            <div class="mb-8 bg-white rounded-lg shadow overflow-hidden">
+                <div class="px-6 py-4 border-b bg-gray-50">
+                    <h2 class="text-xl font-bold text-gray-800">User Management</h2>
+                </div>
+                
+                <table class="w-full">
+                    <thead class="bg-gray-50 border-b">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Current Role</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <?php if (empty($users)): ?>
+                            <tr>
+                                <td colspan="4" class="px-6 py-8 text-center text-gray-500">No users found.</td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($users as $user): ?>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 font-medium text-gray-900"><?= esc($user->name) ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-600"><?= esc($user->email) ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-600"><?= esc($user->role) ?></td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <a href="<?= site_url('dashboard/users/' . $user->id . '/articles') ?>"
+                                                class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                                                View Articles
+                                            </a>
+                                            <form action="<?= site_url('dashboard/users/' . $user->id . '/role') ?>" method="POST"
+                                                class="flex items-center space-x-2">
+                                                <?= csrf_field() ?>
+                                                <select name="role"
+                                                    class="text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                                                    <?php $availableRoles = ['writer', 'editor', 'admin']; ?>
+                                                    <?php foreach ($availableRoles as $availableRole): ?>
+                                                        <option value="<?= esc($availableRole) ?>" <?= $user->role === $availableRole ? 'selected' : '' ?>>
+                                                            <?= ucfirst($availableRole) ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <button type="submit"
+                                                    class="px-3 py-1.5 text-xs bg-gray-500 text-white rounded hover:bg-gray-700">
+                                                    Update Role
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+
         <!-- Header & Create Button -->
         <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold text-gray-800">My Articles</h2>
+            <h2 class="text-2xl font-bold text-gray-800">
+                <?php if (!empty($selectedUser)): ?>
+                    Articles by <?= esc($selectedUser->name) ?>
+                <?php else: ?>
+                    All Articles
+                <?php endif; ?>
+            </h2>
             <a href="<?= site_url('dashboard/articles/create') ?>"
                 class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">
                 + New Article

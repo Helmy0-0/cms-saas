@@ -38,6 +38,11 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->post('reject/(:num)', 'ArticleController::reject/$1');
         $routes->post('publish/(:num)', 'ArticleController::publish/$1');
     });
+
+    $routes->group('dashboard/users', ['filter'=>'role:admin'], function ($routes){
+        $routes->get('(:num)/articles', 'DashboardController::userArticles/$1');
+        $routes->post('(:num)/role', 'DashboardController::updateUserRole/$1');
+    });
 });
 
 // test api
