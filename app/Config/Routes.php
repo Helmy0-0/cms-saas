@@ -16,6 +16,8 @@ $routes->get('articles/(:segment)', 'PublicArticleController::show/$1');
 $routes->get('/login', 'AuthController::login');
 $routes->post('/login', 'AuthController::attempt');
 $routes->get('/logout', 'AuthController::logout');
+$routes->get('register', 'AuthController::register');
+$routes->post('register', 'AuthController::attemptRegister');
 
 $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->get('/dashboard', 'DashboardController::index');

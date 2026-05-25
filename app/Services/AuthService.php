@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\UserModel;
+use App\Entities\User;
 
 class AuthService
 {
@@ -27,6 +28,7 @@ class AuthService
 
         session()->set([
             'user_id' => $user->id,
+            'name' => $user->name,
             'user_role' => $user->role,
             'is_logged_in' => true,
         ]);
@@ -37,5 +39,20 @@ class AuthService
     public function logout() : void
     {
         session()->destroy();
+    }
+
+    public function register(array $data): bool
+    {
+        $userModel = new UserModel();
+
+        $user = new User();
+        $user->name = $data['name'];
+        $user->email    = $data['email'];
+
+        $user->password = password_hash($data['password'], PASSWORD_BCRYPT);
+
+        $user->role     = 'writer';
+
+        return $userModel->save($user);
     }
 }

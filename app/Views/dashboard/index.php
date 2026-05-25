@@ -15,8 +15,11 @@
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <h1 class="text-xl font-bold text-gray-800">CMS SaaS Dashboard</h1>
             <div class="flex items-center space-x-4">
+                <span>
+                    Hello, <?= esc(session()->get('name') ?? 'User')?>
+                </span>
                 <span class="text-sm text-gray-600">
-                    <?= esc(session()->get('user_role')) ?> Account
+                    <?= esc(session()->get('user_role')) ?>
                 </span>
                 <a href="<?= site_url('/') ?>" class="text-sm text-blue-600 hover:text-blue-700">
                     View Site
